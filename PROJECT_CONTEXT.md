@@ -42,9 +42,16 @@ závislostí není zavedena. Důvody jsou v [DECISIONS.md](DECISIONS.md).
 
 ## Stav UX/UI návrhu
 
-Existuje pouze základní HTML stránka. Uživatelské procesy, rozložení obrazovek
-a vizuální styl administrace a studentské části nejsou odsouhlasené.
-`DESIGN.md` ani funkční vizuální prototyp zatím neexistují.
+Aktuální změna směru (2026-11-24): práce na rezervačním systému je pozastavena.
+Na větvi `feat/martina-website` vzniká návrh hlavního prezentačního webu pro
+Martinu jako online lektorku angličtiny. Soubor `prototype/index.html` je první
+statický vizuální nástřel s ukázkovými texty a pracovně upraveným portrétem
+odvozeným z dodané fotografie. Před zveřejněním je nutné použít originální soubor;
+návrh ještě není schválen a není součástí běžící Go aplikace. Původní základ
+zůstává ve větvi `archive/booking-foundation`.
+
+V běžící Go aplikaci existuje pouze základní HTML stránka. Vizuální styl
+prezentačního webu zatím není odsouhlasený. `DESIGN.md` neexistuje.
 
 Nejprve společně navrhneme procesy a obrazovky, potom odsouhlasíme koncepci,
 případně vytvoříme prototyp a po schválení řešení přistoupíme k implementaci.

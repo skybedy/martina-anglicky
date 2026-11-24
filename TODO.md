@@ -1,17 +1,21 @@
 # Úkoly
 
-Aktualizováno 2026-11-20. Priority určují pořadí diskuse a práce, ne oprávnění
+Aktualizováno 2026-11-24. Priority určují pořadí diskuse a práce, ne oprávnění
 k automatické implementaci celého seznamu.
 
 ## Nyní / rozpracováno
 
-- [ ] P0: Společně projít novou strukturu, balíčky, `web.New`, receiver `*App`
-  a předávání šablony handleru. Kód přesunu je hotový; výukové projití navazuje.
-- [ ] P1: Dokončit schválený push ověřené projektové kostry, testů a dokumentace.
-  Chybí URL cílového repozitáře; remote zatím není nastavený. Nezávislé review
-  je bez konkrétních nálezů; testy, race detektor, build a vet prošly.
+- [ ] P0: Projít s Martinou vizuální nástřel v `prototype/index.html`, nahradit
+  ukázkové texty skutečnou nabídkou a rozhodnout o fotografiích, tónu a barvách.
+- [ ] P1: Po odsouhlasení konceptu převést vybraný návrh do běžícího webu;
+  rezervační systém zůstává pozastaven.
 
-## Následující malé kroky
+## Pozastavená práce na rezervacích
+
+- [ ] Společně projít novou strukturu, balíčky, `web.New`, receiver `*App`
+  a předávání šablony handleru. Kód přesunu je hotový; výukové projití navazuje.
+
+## Následující malé kroky rezervací (pozastaveno)
 
 - [ ] P1: Společně navrhnout UX administrace Martiny a veřejných rezervací:
   hlavní uživatelské procesy, potřebné údaje a chybové či prázdné stavy.
