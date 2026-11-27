@@ -9,6 +9,8 @@ import (
 	"github.com/skybedy/martina-anglicky/internal/web"
 )
 
+const defaultAddress = "127.0.0.1:8080"
+
 func main() {
 	homeTemplate, err := template.ParseFiles("templates/home.html")
 	if err != nil {
@@ -22,8 +24,16 @@ func main() {
 
 	app := web.New(homeTemplate, martinaPortrait)
 
-	log.Println("Spouštím server na http://127.0.0.1:8080")
-	if err := http.ListenAndServe("127.0.0.1:8080", app.Routes()); err != nil {
+	address := serverAddress()
+	log.Printf("Spouštím server na http://%s", address)
+	if err := http.ListenAndServe(address, app.Routes()); err != nil {
 		log.Fatal(err)
 	}
+}
+
+func serverAddress() string {
+	if address := os.Getenv("ADDR"); address != "" {
+		return address
+	}
+	return defaultAddress
 }

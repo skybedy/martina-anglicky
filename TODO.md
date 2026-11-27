@@ -85,3 +85,5 @@ k automatické implementaci celého seznamu.
 - 2026-11-27: Porovnána původní kompozice, jednoduchý obdélník a skutečný
   kruhový ořez portrétu. Zvolen svislý portrét s mírně zaoblenými rohy bez
   cedulky a posunutého barevného bloku; pravidlo je v `DESIGN.md`.
+- 2026-11-27: Doplněna konfigurovatelná adresa serveru přes `ADDR` se zachováním
+  lokálního výchozího portu 8080 a testem pro nasazení za reverzní proxy.

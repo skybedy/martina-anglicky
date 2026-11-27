@@ -84,8 +84,9 @@ go test -race ./...
 go vet ./...
 ```
 
-Server má pevnou adresu `127.0.0.1:8080`. Před spuštěním ověř případné obsazení
-portu, neukončuj cizí proces. `go run .` již po přesunu do `cmd/server` nefunguje.
+Server používá výchozí adresu `127.0.0.1:8080`; proměnná `ADDR` ji může změnit,
+například pro systemd službu na `127.0.0.1:18081`. Před spuštěním ověř případné
+obsazení portu, neukončuj cizí proces. `go run .` po přesunu do `cmd/server` nefunguje.
 V omezeném prostředí lze použít `GOCACHE=/tmp/martina-anglicky-go-build`.
 Oprávnění k síti, cache či socketům řeš standardním schvalovacím mechanismem.
 
@@ -94,6 +95,7 @@ Oprávnění k síti, cache či socketům řeš standardním schvalovacím mecha
 Před zavedením sady nebyly žádné testy ani testovací framework. Obchodní logika
 dosud neexistuje, takže testujeme dokončenou HTTP vrstvu a šablonu:
 
+- `TestServerAddress`: výchozí lokální adresa a změna přes `ADDR` pro nasazení.
 - `TestRoutes`: osm scénářů pro skutečný router, handler a šablonu; prezentační HTML
   a data, query parametr, `HEAD`, neznámé cesty a nepovolené metody včetně `Allow`.
 - `TestMartinaPortraitImage`: ověří stav, MIME typ, cache hlavičku a přesná data
@@ -103,7 +105,7 @@ dosud neexistuje, takže testujeme dokončenou HTTP vrstvu a šablonu:
 - `TestHomeTemplateData`: skutečná šablona escapuje HTML v textových polích
   a zvládá prázdné hodnoty.
 
-Jde celkem o 12 scénářů ve čtyřech testovacích funkcích. Testy požadavků používají
+Jde celkem o 14 scénářů v pěti testovacích funkcích. Testy požadavků používají
 `httptest.NewRecorder` bez otevřeného socketu; procházejí propojením komponent
 v paměti. Nevyžadují služby, databázi ani konfiguraci. Routy a datové scénáře
 se spouštějí i souběžně pomocí `t.Parallel()`.
@@ -139,8 +141,8 @@ testy musí mít izolované testovací prostředí, nikdy produkční databázi.
   projektová dokumentace; aplikační kód ani testy se nezměnily.
 - Hotový je pouze pracovní prezentační prototyp na Go kostře. Neexistuje
   přihlášení, evidence studentů, dostupnost, kalendář, rezervace ani nasazení.
-- Testy dosavadní webové vrstvy neodhalily funkční chybu. Pevný port a závislost
-  na pracovním adresáři jsou současná omezení kostry; zbylé mezery v testech jsou výše.
+- Testy dosavadní webové vrstvy neodhalily funkční chybu. Adresu lze změnit přes
+  `ADDR`; závislost na pracovním adresáři zůstává současným omezením.
 
 MVP zatím nezahrnuje platby, studentské účty, více učitelů ani složité integrace.
 Délky lekcí, potvrzování, rušení, předstihy a chování při změnách času nejsou

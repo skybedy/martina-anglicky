@@ -57,6 +57,8 @@ go run ./cmd/server
 
 Stránka je na <http://127.0.0.1:8080/>. Server zastavíme pomocí `Ctrl+C`.
 Pracovní adresář zůstává kořenem projektu, aby se našla šablona i portrét.
+Pro nasazení lze adresu změnit prostředím, například
+`ADDR=127.0.0.1:18081 go run ./cmd/server`; bez `ADDR` zůstává lokální port 8080.
 
 Dodržujeme tyto hranice:
 
@@ -83,10 +85,10 @@ a souborem `templates/home.html`. Požadavky i odpovědi jsou v paměti přes
 `httptest.NewRequest` a `httptest.NewRecorder`; nespouštějí HTTP server,
 neobsazují port a nepotřebují databázi, síť, `.env` ani další služby.
 
-Pokryté jsou prezentační HTML a jeho data, portrét včetně MIME typu a cache
-hlavičky, query parametr, přijetí `HEAD`, přesné směrování cest, HTTP 404 a 405
-včetně `Allow`, chyba vykreslení bez úniku částečného obsahu či interní chyby,
-escapování HTML a prázdná pole šablony.
+Pokryté jsou výchozí i nakonfigurovaná adresa serveru, prezentační HTML a jeho
+data, portrét včetně MIME typu a cache hlavičky, query parametr, přijetí `HEAD`,
+přesné směrování cest, HTTP 404 a 405 včetně `Allow`, chyba vykreslení bez úniku
+částečného obsahu či interní chyby, escapování HTML a prázdná pole šablony.
 Test `HEAD` ověřuje stav a hlavičky handleru; potlačení těla na síťové vrstvě
 `net/http.Server` není součástí tohoto testu v paměti.
 
