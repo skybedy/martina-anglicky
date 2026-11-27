@@ -90,6 +90,24 @@ obsazení portu, neukončuj cizí proces. `go run .` po přesunu do `cmd/server`
 V omezeném prostředí lze použít `GOCACHE=/tmp/martina-anglicky-go-build`.
 Oprávnění k síti, cache či socketům řeš standardním schvalovacím mechanismem.
 
+## Produkční nasazení
+
+- Veřejná adresa je <https://martina-anglicky.online/>; HTTP se přesměruje na HTTPS.
+- DNS domény míří na server dostupný přes místní SSH alias `vps`.
+- Systemd jednotka `martina-anglicky.service` je aktivní a zapnutá po startu.
+  Aplikace naslouchá jen na `127.0.0.1:18081` a veřejně ji zpřístupňuje Nginx.
+- Release `55e601152c62` je v
+  `/home/skybedy/apps/martina-anglicky/releases/55e601152c62`. Symlink `current`
+  umožňuje atomické přepnutí verze a služba z něj načítá binárku, šablonu i portrét.
+- Reprodukovatelné konfigurace jsou v `deploy/`. Certifikát Let's Encrypt je
+  spravovaný Certbotem, automaticky se obnovuje a aktuálně platí do 2027-02-25.
+- Po nasazení prošly `nginx -t`, kontrola aktivní a povolené služby, loopback HTTP,
+  veřejné HTTPS HTML i PNG a vizuální kontrola produkční stránky v Chromiu.
+
+Nasazení další verze vyžaduje sestavit linux/amd64 binárku, vytvořit nový
+verzovaný release, přepnout `current` a restartovat službu. Žádný z těchto kroků
+se neprovádí automaticky pouze na základě commitu nebo pushnutí větve.
+
 ## Stav automatických testů
 
 Před zavedením sady nebyly žádné testy ani testovací framework. Obchodní logika
@@ -110,11 +128,11 @@ Jde celkem o 14 scénářů v pěti testovacích funkcích. Testy požadavků po
 v paměti. Nevyžadují služby, databázi ani konfiguraci. Routy a datové scénáře
 se spouštějí i souběžně pomocí `t.Parallel()`.
 
-Ověření 2026-11-27: po propojení prototypu s Go aplikací prošly
+Ověření 2026-11-27: po propojení prototypu a přípravě nasazení prošly
 `go test -count=1 ./...`, `go test -race -count=1 ./...`, `go build ./...`
-a `go vet ./...`. Skutečný server spuštěný přes `go run ./cmd/server` vrátil
-pro `/` HTML 200 a pro portrét PNG 200; obě podoby byly vykresleny v headless
-Chromiu při šířce 1440 px a 390 px. Návod je v
+a `go vet ./...`. Skutečný server s `ADDR=127.0.0.1:18081` vrátil HTML 200.
+Lokální i produkční podoba byla vykreslena v headless Chromiu; před nasazením
+byly ověřeny také HTML a PNG odpovědi. Návod je v
 [README.md](README.md#automatické-testování).
 
 Automaticky netestujeme start procesu a chyby načtení šablony v `cmd/server`,
@@ -139,8 +157,8 @@ testy musí mít izolované testovací prostředí, nikdy produkční databázi.
   `go test -race -count=1 ./...`, `go build ./...` a `go vet ./...`
   s `GOCACHE=/tmp/martina-anglicky-go-build`. Po review se změnila pouze
   projektová dokumentace; aplikační kód ani testy se nezměnily.
-- Hotový je pouze pracovní prezentační prototyp na Go kostře. Neexistuje
-  přihlášení, evidence studentů, dostupnost, kalendář, rezervace ani nasazení.
+- Nasazený je pracovní prezentační prototyp na Go kostře. Neexistuje přihlášení,
+  evidence studentů, dostupnost, kalendář ani rezervace.
 - Testy dosavadní webové vrstvy neodhalily funkční chybu. Adresu lze změnit přes
   `ADDR`; závislost na pracovním adresáři zůstává současným omezením.
 

@@ -87,3 +87,6 @@ k automatické implementaci celého seznamu.
   cedulky a posunutého barevného bloku; pravidlo je v `DESIGN.md`.
 - 2026-11-27: Doplněna konfigurovatelná adresa serveru přes `ADDR` se zachováním
   lokálního výchozího portu 8080 a testem pro nasazení za reverzní proxy.
+- 2026-11-27: Prezentační web nasazen na `martina-anglicky.online` jako systemd
+  služba za Nginx reverzní proxy. HTTPS zajišťuje automaticky obnovovaný
+  certifikát Let's Encrypt; veřejné HTML i portrét a produkční vzhled byly ověřeny.

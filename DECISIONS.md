@@ -128,6 +128,18 @@ ověřuje v kódu; technologický směr není totéž jako nainstalovaná závis
   a současnou architekturu oddělených rout, handlerů a závislostí.
 - Stav: implementováno jako pracovní prototyp; obsah ani vzhled nejsou schválené.
 
+## 2026-11-27 — Nasazení za Nginx přes systemd
+
+- Aplikaci provozovat jako `martina-anglicky.service` pod uživatelem `skybedy`,
+  pouze na loopback adrese `127.0.0.1:18081`.
+- Veřejný provoz domény `martina-anglicky.online` vede přes Nginx; HTTP se
+  přesměruje na HTTPS a certifikát spravuje Certbot.
+- Binárku, šablonu a portrét ukládat do verzovaných release adresářů. Aktivní
+  release určuje symlink `current`, aby bylo přepnutí i případný návrat jednoznačné.
+- Důvod: neotevírat aplikační port veřejně, respektovat existující weby na VPS
+  a oddělit běh procesu, reverzní proxy, TLS a jednotlivé verze aplikace.
+- Stav: nasazen release `55e601152c62`; konfigurace jsou verzované v `deploy/`.
+
 ## Dosud neuzavřeno
 
 Konkrétní datové schéma, přihlašovací knihovna, rezervační předstihy, rušení,

@@ -1,0 +1,21 @@
+[Unit]
+Description=Martina Anglicky website
+After=network.target
+
+[Service]
+Type=simple
+User=skybedy
+Group=skybedy
+WorkingDirectory=/home/skybedy/apps/martina-anglicky/current
+Environment=ADDR=127.0.0.1:18081
+ExecStart=/home/skybedy/apps/martina-anglicky/current/server
+Restart=on-failure
+RestartSec=5
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=full
+ProtectHome=read-only
+UMask=0027
+
+[Install]
+WantedBy=multi-user.target

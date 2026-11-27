@@ -120,6 +120,17 @@ implementované; jejich testy budou vznikat spolu s nimi. Budoucí databázové
 integrační testy musí používat samostatné testovací prostředí, nikdy produkci.
 CI/CD zatím nezavádíme; testy jsou připravené ke spuštění standardním Go příkazem.
 
+## Produkční nasazení
+
+Pracovní prezentační web běží na <https://martina-anglicky.online/>. Na VPS jej
+spravuje systemd jednotka `martina-anglicky.service` a aplikace naslouchá pouze
+na `127.0.0.1:18081`. Nginx zajišťuje veřejný HTTPS přístup a Certbot automatickou
+obnovu certifikátu.
+
+Verzované releasy jsou v `/home/skybedy/apps/martina-anglicky/releases/` a symlink
+`current` určuje aktivní verzi. Konfigurace systemd a Nginxu jsou v `deploy/`.
+Commit ani push samy novou verzi nenasadí; deployment je samostatný schvalovaný krok.
+
 ## Krok 1: základ Go projektu
 
 V prvním kroku jsme založili Git repozitář a Go modul. Program vypsal
