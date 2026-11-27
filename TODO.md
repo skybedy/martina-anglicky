@@ -9,8 +9,9 @@ k automatické implementaci celého seznamu.
   ukázkové texty skutečnou nabídkou a rozhodnout o fotografiích, tónu a barvách.
 - [ ] P1: Před zveřejněním nahradit pracovně upravený portrét originální
   fotografií a zopakovat vizuální kontrolu.
-- [ ] P1: Po odsouhlasení konceptu zapsat pravidla do `DESIGN.md` a rozhodnout
-  o začlenění větve do `main`; rezervační systém zůstává pozastaven.
+- [ ] P1: Další odsouhlasená pravidla průběžně doplňovat do `DESIGN.md` a po
+  schválení konceptu rozhodnout o začlenění větve do `main`; rezervační systém
+  zůstává pozastaven.
 
 ## Pozastavená práce na rezervacích
 
@@ -81,3 +82,6 @@ k automatické implementaci celého seznamu.
   webu a pracovní portrét; rezervační základ byl zakonzervován ve vedlejší větvi.
 - 2026-11-27: Vizuální prototyp byl převeden do Go šablony, portrét dostal
   vlastní handler a návrh je připravený ke spuštění přes `go run ./cmd/server`.
+- 2026-11-27: Porovnána původní kompozice, jednoduchý obdélník a skutečný
+  kruhový ořez portrétu. Zvolen svislý portrét s mírně zaoblenými rohy bez
+  cedulky a posunutého barevného bloku; pravidlo je v `DESIGN.md`.

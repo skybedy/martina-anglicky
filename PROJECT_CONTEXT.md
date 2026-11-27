@@ -49,10 +49,11 @@ Pracovně upravený portrét z `prototype/martina-koncept.png` server načte př
 startu a zpřístupní přes přesnou asset routu. Před zveřejněním je nutné použít
 originální fotografii.
 
-Návrh, texty, kontakt, barvy ani fotografie zatím nejsou schválené Martinou.
-Technické vykreslení bylo ověřeno v Chromiu při šířce 1440 px a 390 px; výsledný
-směr je ještě potřeba subjektivně projít s uživatelem a Martinou. `DESIGN.md`
-neexistuje; vznikne až po schválení směru.
+Návrh, texty, kontakt, barvy ani konkrétní fotografie zatím nejsou schválené
+Martinou. Po porovnání původní složité kompozice, skutečného kruhového ořezu
+a jednoduchého obdélníku uživatel zvolil svislý portrét s mírně zaoblenými
+rohy a jemným stínem, bez cedulky a posunutého barevného bloku. Pravidlo je
+v `DESIGN.md`; zbývající vizuální směr je ještě potřeba projít s Martinou.
 
 ## Architektura a tok požadavku
 

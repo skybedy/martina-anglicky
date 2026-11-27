@@ -11,8 +11,9 @@ má vlastní vysvětlení a ověření; další krok následuje po společném p
 
 Pravidla práce jsou v [AGENTS.md](AGENTS.md), aktuální stav v
 [PROJECT_CONTEXT.md](PROJECT_CONTEXT.md), úkoly v [TODO.md](TODO.md)
-a důvody rozhodnutí v [DECISIONS.md](DECISIONS.md). Při otevření dalšího chatu
-použij [START_NEW_CODEX_CHAT.md](START_NEW_CODEX_CHAT.md).
+a důvody rozhodnutí v [DECISIONS.md](DECISIONS.md). Schválená pravidla vzhledu
+jsou v [DESIGN.md](DESIGN.md). Při otevření dalšího chatu použij
+[START_NEW_CODEX_CHAT.md](START_NEW_CODEX_CHAT.md).
 
 ## Technologický směr
 
