@@ -106,7 +106,27 @@ ověřuje v kódu; technologický směr není totéž jako nainstalovaná závis
 - Upřesňuje dosavadní frontendový směr: Tailwind CSS, vanilla JavaScript
   a FullCalendar nejsou zavedené; jejich finální použití se potvrdí při návrhu.
   Toto rozhodnutí nemění Go, `net/http` ani současnou funkční HTML kostru.
-- Stav: pravidla schválena a zapsána; UX návrh, DESIGN.md a prototyp zatím neexistují.
+- Stav: pravidla schválena a zapsána; vznikl neschválený prezentační prototyp,
+  `DESIGN.md` zatím neexistuje.
+
+## 2026-11-24 — Prezentační web je aktuální priorita
+
+- Práci na rezervačním systému pozastavit a výchozí stav uchovat ve větvi
+  `archive/booking-foundation`.
+- Na větvi `feat/martina-website` nejprve připravit základní vizuální a obsahový
+  nástřel webu Martiny pro české studenty, klidně s jasně označenými ukázkovými údaji.
+- Důvod: Martina a uživatel potřebují konkrétní podklad pro diskusi o směru webu;
+  rezervační funkce lze doplnit později.
+
+## 2026-11-27 — Prototyp spouštět jako Go aplikaci
+
+- Vizuální návrh obsluhuje existující `net/http` aplikace na kořenové routě,
+  nikoli samostatný statický server.
+- Šablona i pracovní portrét se načtou při startu a předají do `web.App`;
+  portrét vrací samostatný pojmenovaný handler.
+- Důvod: zachovat jeden běžný způsob lokálního spuštění `go run ./cmd/server`
+  a současnou architekturu oddělených rout, handlerů a závislostí.
+- Stav: implementováno jako pracovní prototyp; obsah ani vzhled nejsou schválené.
 
 ## Dosud neuzavřeno
 

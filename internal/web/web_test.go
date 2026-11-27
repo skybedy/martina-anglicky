@@ -6,6 +6,7 @@ import (
 	"html/template"
 	"net/http"
 	"net/http/httptest"
+	"os"
 	"path/filepath"
 	"strings"
 	"testing"
@@ -23,8 +24,18 @@ func loadHomeTemplate(t *testing.T) *template.Template {
 	return tmpl
 }
 
+func loadMartinaPortrait(t *testing.T) []byte {
+	t.Helper()
+
+	portrait, err := os.ReadFile(filepath.Join("..", "..", "prototype", "martina-koncept.png"))
+	if err != nil {
+		t.Fatalf("load Martina portrait: %v", err)
+	}
+	return portrait
+}
+
 func TestRoutes(t *testing.T) {
-	handler := web.New(loadHomeTemplate(t)).Routes()
+	handler := web.New(loadHomeTemplate(t), loadMartinaPortrait(t)).Routes()
 
 	tests := []struct {
 		name        string
@@ -92,9 +103,10 @@ func TestRoutes(t *testing.T) {
 				for _, fragment := range []string{
 					"<!doctype html>",
 					`<html lang="cs">`,
-					"<title>Angličtina s Martinou</title>",
-					"<h1>Angličtina s Martinou</h1>",
-					"<p>Individuální online lekce angličtiny s Martinou.</p>",
+					"<title>Martina — angličtina po svém | vizuální návrh</title>",
+					"<h1>Angličtina, kterou si",
+					`src="/assets/martina-koncept.png"`,
+					"Pojďme zjistit, jestli si sedneme.",
 				} {
 					if !strings.Contains(recorder.Body.String(), fragment) {
 						t.Errorf("response is missing %q", fragment)
@@ -105,6 +117,30 @@ func TestRoutes(t *testing.T) {
 	}
 }
 
+func TestMartinaPortraitImage(t *testing.T) {
+	portrait := loadMartinaPortrait(t)
+	handler := web.New(loadHomeTemplate(t), portrait).Routes()
+	recorder := httptest.NewRecorder()
+
+	handler.ServeHTTP(
+		recorder,
+		httptest.NewRequest(http.MethodGet, "/assets/martina-koncept.png", nil),
+	)
+
+	if recorder.Code != http.StatusOK {
+		t.Fatalf("status = %d, want 200; body: %s", recorder.Code, recorder.Body.String())
+	}
+	if got := recorder.Header().Get("Content-Type"); got != "image/png" {
+		t.Errorf("Content-Type = %q, want image/png", got)
+	}
+	if got := recorder.Header().Get("Cache-Control"); got != "public, max-age=3600" {
+		t.Errorf("Cache-Control = %q, want public cache header", got)
+	}
+	if !bytes.Equal(recorder.Body.Bytes(), portrait) {
+		t.Error("response body does not match Martina portrait")
+	}
+}
+
 func TestHomeTemplateError(t *testing.T) {
 	// Execution writes this prefix before the missing field causes an error.
 	// The handler must discard the partial page and return only a public error.
@@ -112,7 +148,7 @@ func TestHomeTemplateError(t *testing.T) {
 	if err != nil {
 		t.Fatalf("parse error fixture: %v", err)
 	}
-	handler := web.New(tmpl).Routes()
+	handler := web.New(tmpl, nil).Routes()
 	recorder := httptest.NewRecorder()
 
 	handler.ServeHTTP(recorder, httptest.NewRequest(http.MethodGet, "/", nil))
@@ -158,8 +194,7 @@ func TestHomeTemplateData(t *testing.T) {
 
 			for _, fragment := range []string{
 				"<title>" + html.EscapeString(tt.title) + "</title>",
-				"<h1>" + html.EscapeString(tt.title) + "</h1>",
-				"<p>" + html.EscapeString(tt.description) + "</p>",
+				`<meta name="description" content="` + html.EscapeString(tt.description) + `">`,
 			} {
 				if !strings.Contains(output.String(), fragment) {
 					t.Errorf("rendered HTML is missing %q", fragment)

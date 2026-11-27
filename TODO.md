@@ -1,14 +1,16 @@
 # Úkoly
 
-Aktualizováno 2026-11-24. Priority určují pořadí diskuse a práce, ne oprávnění
+Aktualizováno 2026-11-27. Priority určují pořadí diskuse a práce, ne oprávnění
 k automatické implementaci celého seznamu.
 
 ## Nyní / rozpracováno
 
-- [ ] P0: Projít s Martinou vizuální nástřel v `prototype/index.html`, nahradit
+- [ ] P0: Spustit Go aplikaci a projít s Martinou vizuální nástřel na `/`, nahradit
   ukázkové texty skutečnou nabídkou a rozhodnout o fotografiích, tónu a barvách.
-- [ ] P1: Po odsouhlasení konceptu převést vybraný návrh do běžícího webu;
-  rezervační systém zůstává pozastaven.
+- [ ] P1: Před zveřejněním nahradit pracovně upravený portrét originální
+  fotografií a zopakovat vizuální kontrolu.
+- [ ] P1: Po odsouhlasení konceptu zapsat pravidla do `DESIGN.md` a rozhodnout
+  o začlenění větve do `main`; rezervační systém zůstává pozastaven.
 
 ## Pozastavená práce na rezervacích
 
@@ -53,8 +55,6 @@ k automatické implementaci celého seznamu.
 
 - [ ] P3: Potvrzovací e-maily a připomínky, případně opakované lekce.
 - [ ] P3: Integrace kalendářů a platby pouze podle budoucího zadání.
-- [ ] P3: Git remote nastavit pouze na výslovný pokyn; není nutný
-  pro pokračování lokálního vývoje ani první commit.
 
 ## Stručná historie dokončené práce
 
@@ -76,4 +76,8 @@ k automatické implementaci celého seznamu.
   spustit Go kontroly kvůli čtecímu prostředí; implementační chat ověřil nezměněný
   obsah souborů a úspěšně zopakoval testy, race detektor, build a vet.
 - 2026-11-20: Uživatel schválil první commit ověřeného základu i následný push.
-  Adresa vzdáleného repozitáře zatím nebyla zadána.
+  Remote `origin` nyní odkazuje na GitHub repozitář projektu.
+- 2026-11-24: Cloudová větev přidala statický vizuální prototyp prezentačního
+  webu a pracovní portrét; rezervační základ byl zakonzervován ve vedlejší větvi.
+- 2026-11-27: Vizuální prototyp byl převeden do Go šablony, portrét dostal
+  vlastní handler a návrh je připravený ke spuštění přes `go run ./cmd/server`.

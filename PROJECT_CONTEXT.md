@@ -1,14 +1,14 @@
 # Kontext projektu
 
-Poslední věcné ověření: 2026-11-20. Dokument popisuje stav souborů, nikoli
+Poslední věcné ověření: 2026-11-27. Dokument popisuje stav souborů, nikoli
 záruku, že právě běží server. Git a prostředí ověř při každé nové relaci.
 
 ## Účel a způsob práce
 
-Vlastní rezervační web pro Martinu, jednu učitelku online angličtiny.
-Martina spravuje dostupnost a lekce; studenti si ve veřejné části vybírají
-uvolněné termíny. Oba pohledy budou používat stejná data. Veřejná část nesmí
-odhalovat údaje ostatních studentů a rezervace se nesmějí překrývat.
+Aktuálním cílem je základní prezentační web Martiny jako online lektorky
+angličtiny pro české dospělé studenty. Práce na rezervačním systému je
+pozastavena a její výchozí stav uchovává větev `archive/booking-foundation`.
+K rezervacím se lze později vrátit bez toho, aby nyní určovaly podobu webu.
 
 Vývoj současně slouží jako návrat uživatele ke Go. Postupujeme po malých
 funkčních krocích s vysvětlením a zastavením na dotazy. Aktuální úkol ani
@@ -29,46 +29,45 @@ Commit vyžaduje výslovné schválení; push a deployment samostatný souhlas.
 
 - Modul `github.com/skybedy/martina-anglicky`, `go.mod` deklaruje Go 1.24.0.
 - Pouze standardní knihovna: HTTP server a router `net/http`, `html/template`,
-  `bytes`, `log`. Žádný Gin, Echo ani Gorilla, žádné externí Go závislosti.
-- Jedna česká HTML stránka bez CSS či JavaScriptu. Bez databáze a konfigurace `.env`.
+  `bytes`, `log`, `os`. Žádný Gin, Echo ani Gorilla, žádné externí Go závislosti.
+- Jednostránkový český prezentační návrh s responzivním CSS přímo v šabloně,
+  bez JavaScriptu. Bez databáze a konfigurace `.env`.
 - Testy v `internal/web/web_test.go` používají standardní `testing` a `httptest`.
   CI/CD ani kontejnerová konfigurace nejsou zavedené.
 
-Plánovaný, zatím nezavedený stack: MariaDB/MySQL přes `database/sql` a ovladač,
-SQL migrace `golang-migrate`. Tailwind CSS 4 a vanilla JavaScript jsou dosavadní
-preferovaný frontendový směr, FullCalendar je návrh pro administraci. Jejich
-finální použití se potvrdí při návrhu UX/UI; žádná z těchto frontendových
-závislostí není zavedena. Důvody jsou v [DECISIONS.md](DECISIONS.md).
+Pro pozastavené rezervace je plánovaná MariaDB/MySQL přes `database/sql`,
+SQL migrace `golang-migrate` a případně FullCalendar. Tailwind CSS 4 a vanilla
+JavaScript zůstávají pouze dřívějším směrem; prezentační prototyp používá vlastní
+CSS bez frontendového buildu. Finální nástroje se zvolí až podle schváleného návrhu.
 
 ## Stav UX/UI návrhu
 
-Aktuální změna směru (2026-11-24): práce na rezervačním systému je pozastavena.
-Na větvi `feat/martina-website` vzniká návrh hlavního prezentačního webu pro
-Martinu jako online lektorku angličtiny. Soubor `prototype/index.html` je první
-statický vizuální nástřel s ukázkovými texty a pracovně upraveným portrétem
-odvozeným z dodané fotografie. Před zveřejněním je nutné použít originální soubor;
-návrh ještě není schválen a není součástí běžící Go aplikace. Původní základ
-zůstává ve větvi `archive/booking-foundation`.
+Na větvi `feat/martina-website` je první jednostránkový vizuální nástřel.
+Původní cloudový soubor `prototype/index.html` byl převeden do
+`templates/home.html`, takže jej vykresluje běžící Go aplikace na `/`.
+Pracovně upravený portrét z `prototype/martina-koncept.png` server načte při
+startu a zpřístupní přes přesnou asset routu. Před zveřejněním je nutné použít
+originální fotografii.
 
-V běžící Go aplikaci existuje pouze základní HTML stránka. Vizuální styl
-prezentačního webu zatím není odsouhlasený. `DESIGN.md` neexistuje.
-
-Nejprve společně navrhneme procesy a obrazovky, potom odsouhlasíme koncepci,
-případně vytvoříme prototyp a po schválení řešení přistoupíme k implementaci.
-Mobilní ovládání, přehlednost a konzistence jsou požadavky, ne již ověřené vlastnosti.
+Návrh, texty, kontakt, barvy ani fotografie zatím nejsou schválené Martinou.
+Technické vykreslení bylo ověřeno v Chromiu při šířce 1440 px a 390 px; výsledný
+směr je ještě potřeba subjektivně projít s uživatelem a Martinou. `DESIGN.md`
+neexistuje; vznikne až po schválení směru.
 
 ## Architektura a tok požadavku
 
-- `cmd/server/main.go`: načte šablonu, vytvoří `web.App` a spustí server.
-- `internal/web/app.go`: `App` drží `*template.Template`; `New` ji přijímá jako závislost.
+- `cmd/server/main.go`: načte šablonu a portrét, vytvoří `web.App` a spustí server.
+- `internal/web/app.go`: `App` drží `*template.Template` a data portrétu;
+  `New` obě závislosti přijímá.
 - `internal/web/routes.go`: `Routes() http.Handler` vytvoří `http.ServeMux`
-  a registruje `GET /{$}` na pojmenovanou metodu `app.home`.
-- `internal/web/handlers.go`: sestaví `homePageData`, vykreslí šablonu do bufferu
-  a odešle HTML. Při chybě vykreslení vrátí 500, chyby zápisu loguje.
-- `templates/home.html`: titulek a popis z dat, text o připravovaných rezervacích.
+  a registruje pojmenované handlery pro `GET /{$}` a portrét.
+- `internal/web/handlers.go`: vykreslí HTML do bufferu a odešle portrét se
+  zjištěným MIME typem. Chyby vykreslení či zápisu ošetří a loguje.
+- `templates/home.html`: responzivní prezentační stránka s pracovními texty.
+- `prototype/`: původní statický návrh a pracovní obrazový soubor.
 
-Požadavek jde přes HTTP server do routeru, metody `app.home` a HTML šablony.
-Šablona se parsuje jednou při startu; po její úpravě je nutný restart.
+Požadavek jde přes HTTP server do routeru a pojmenovaného handleru. Šablona
+i portrét se načítají jednou při startu; po jejich úpravě je nutný restart.
 Rezervační pravidla mají později patřit do `internal/booking` a SQL do
 `internal/store`; tyto balíčky dosud neexistují.
 
@@ -94,22 +93,25 @@ Oprávnění k síti, cache či socketům řeš standardním schvalovacím mecha
 Před zavedením sady nebyly žádné testy ani testovací framework. Obchodní logika
 dosud neexistuje, takže testujeme dokončenou HTTP vrstvu a šablonu:
 
-- `TestRoutes`: osm scénářů pro skutečný router, handler a šablonu; úvodní HTML
+- `TestRoutes`: osm scénářů pro skutečný router, handler a šablonu; prezentační HTML
   a data, query parametr, `HEAD`, neznámé cesty a nepovolené metody včetně `Allow`.
+- `TestMartinaPortraitImage`: ověří stav, MIME typ, cache hlavičku a přesná data
+  portrétu vrácená asset handlerem.
 - `TestHomeTemplateError`: selhání vykreslení po částečném zápisu musí vrátit
   500 a veřejnou zprávu bez rozpracovaného HTML nebo interních detailů.
 - `TestHomeTemplateData`: skutečná šablona escapuje HTML v textových polích
   a zvládá prázdné hodnoty.
 
-Jde celkem o 11 scénářů ve třech testovacích funkcích. Testy požadavků používají
+Jde celkem o 12 scénářů ve čtyřech testovacích funkcích. Testy požadavků používají
 `httptest.NewRecorder` bez otevřeného socketu; procházejí propojením komponent
 v paměti. Nevyžadují služby, databázi ani konfiguraci. Routy a datové scénáře
 se spouštějí i souběžně pomocí `t.Parallel()`.
 
-Ověření 2026-11-20: `go test ./...`, podrobná sada `go test -count=1 -v ./...`,
-`go test -race -count=1 ./...`, měření pokrytí, `go build ./...` a `go vet ./...`
-prošly. Pokrytí příkazů je 92,3 % pro `internal/web`, 0 % pro `cmd/server`
-a 60 % celkem. Pokrytí není důkazem správnosti. Návod a příkazy jsou v
+Ověření 2026-11-27: po propojení prototypu s Go aplikací prošly
+`go test -count=1 ./...`, `go test -race -count=1 ./...`, `go build ./...`
+a `go vet ./...`. Skutečný server spuštěný přes `go run ./cmd/server` vrátil
+pro `/` HTML 200 a pro portrét PNG 200; obě podoby byly vykresleny v headless
+Chromiu při šířce 1440 px a 390 px. Návod je v
 [README.md](README.md#automatické-testování).
 
 Automaticky netestujeme start procesu a chyby načtení šablony v `cmd/server`,
@@ -120,13 +122,11 @@ testy musí mít izolované testovací prostředí, nikdy produkční databázi.
 
 ## Git, rozpracovanost a omezení
 
-- Při inicializaci paměti: větev `main`, žádné commity, žádné remotes;
-  všechny projektové soubory jsou untracked. Není commitová historie k analýze.
-  Toto je časový snímek, nikoli pokyn k automatickému commitu.
-- Dosavadní změny se zachovávají. Zavedení testů a úpravy pravidel spolupráce
-  nemění aplikační kód ani závislosti. Uživatel 2026-11-20 schválil první commit
-  ověřené kostry, testů a dokumentace i následný push. Skutečný stav commitů
-  vždy ověř v Gitu; vzdálený repozitář zatím není nastavený a jeho URL chybí.
+- Remote `origin` je `https://github.com/skybedy/martina-anglicky.git`.
+  Aktivní pracovní větev je `feat/martina-website`; archiv rezervačního základu
+  je `archive/booking-foundation`. Lokální `main` obsahuje navíc dokumentační
+  commit `e242467`; před budoucím začleněním webu se musí zachovat nebo vědomě
+  nahradit, nikoli bez kontroly přepsat.
 - Uživatel 2026-11-20 předal výsledek nezávislého CLI review všech staged,
   unstaged a untracked souborů: bez konkrétních funkčních či bezpečnostních
   nálezů, formátování a kontroly diffu prošly. Reviewer nemohl spustit testy,
@@ -136,8 +136,8 @@ testy musí mít izolované testovací prostředí, nikdy produkční databázi.
   `go test -race -count=1 ./...`, `go build ./...` a `go vet ./...`
   s `GOCACHE=/tmp/martina-anglicky-go-build`. Po review se změnila pouze
   projektová dokumentace; aplikační kód ani testy se nezměnily.
-- Hotová je pouze výuková kostra. Neexistuje přihlášení, evidence studentů,
-  dostupnost, kalendář, rezervace, e-maily ani nasazení.
+- Hotový je pouze pracovní prezentační prototyp na Go kostře. Neexistuje
+  přihlášení, evidence studentů, dostupnost, kalendář, rezervace ani nasazení.
 - Testy dosavadní webové vrstvy neodhalily funkční chybu. Pevný port a závislost
   na pracovním adresáři jsou současná omezení kostry; zbylé mezery v testech jsou výše.
 

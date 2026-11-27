@@ -1,7 +1,8 @@
 # Martina – online výuka angličtiny
 
-Rezervační systém pro jednu učitelku: Martina spravuje dostupnost a lekce,
-studenti si ve veřejném rozhraní rezervují volné termíny.
+Prezentační web Martiny jako online lektorky angličtiny pro české studenty.
+Práce na rezervačním systému je nyní pozastavená a její základ je bezpečně
+uložený ve větvi `archive/booking-foundation`.
 
 Projekt vzniká po malých krocích jako praktické opakování Go. Každý krok
 má vlastní vysvětlení a ověření; další krok následuje po společném projití.
@@ -15,10 +16,13 @@ použij [START_NEW_CODEX_CHAT.md](START_NEW_CODEX_CHAT.md).
 
 ## Technologický směr
 
-Go se standardním HTTP serverem a routerem `net/http`, MariaDB/MySQL přes
-`database/sql`, SQL migrace přes `golang-migrate`, `html/template`, Tailwind
-CSS 4 a vanilla JavaScript. Pro administrátorský kalendář je navržen
-FullCalendar.
+Současný prezentační prototyp používá Go, standardní HTTP server a router
+`net/http`, `html/template` a vlastní responzivní CSS přímo v šabloně. Nemá
+frontendový build ani externí závislosti.
+
+MariaDB/MySQL, SQL migrace, Tailwind CSS, vanilla JavaScript a FullCalendar
+patří pouze k dřívějšímu směru pozastaveného rezervačního systému. Jejich
+budoucí použití se potvrdí až podle skutečné potřeby.
 
 HTTP vrstvu stavíme bez frameworku, abychom při vývoji procvičovali přímo
 standardní knihovnu Go. Ostatní závislosti budeme přidávat postupně,
@@ -37,7 +41,10 @@ internal/
     handlers.go      obsluha HTTP požadavků
     web_test.go      testy rout, vykreslování a HTML šablony
 templates/
-  home.html          HTML šablona úvodní stránky
+  home.html          responzivní prezentační stránka
+prototype/
+  index.html         původní statický nástřel z cloudové větve
+  martina-koncept.png pracovní portrét načítaný Go aplikací
 go.mod               identita modulu a verze Go
 ```
 
@@ -48,7 +55,7 @@ go run ./cmd/server
 ```
 
 Stránka je na <http://127.0.0.1:8080/>. Server zastavíme pomocí `Ctrl+C`.
-Pracovní adresář zůstává kořenem projektu, aby se našel soubor šablony.
+Pracovní adresář zůstává kořenem projektu, aby se našla šablona i portrét.
 
 Dodržujeme tyto hranice:
 
@@ -75,9 +82,10 @@ a souborem `templates/home.html`. Požadavky i odpovědi jsou v paměti přes
 `httptest.NewRequest` a `httptest.NewRecorder`; nespouštějí HTTP server,
 neobsazují port a nepotřebují databázi, síť, `.env` ani další služby.
 
-Pokryté jsou úvodní HTML a jeho data, query parametr, přijetí `HEAD`, přesné
-směrování cest, HTTP 404 a 405 včetně `Allow`, chyba vykreslení bez úniku
-částečného obsahu či interní chyby, escapování HTML a prázdná pole šablony.
+Pokryté jsou prezentační HTML a jeho data, portrét včetně MIME typu a cache
+hlavičky, query parametr, přijetí `HEAD`, přesné směrování cest, HTTP 404 a 405
+včetně `Allow`, chyba vykreslení bez úniku částečného obsahu či interní chyby,
+escapování HTML a prázdná pole šablony.
 Test `HEAD` ověřuje stav a hlavičky handleru; potlačení těla na síťové vrstvě
 `net/http.Server` není součástí tohoto testu v paměti.
 
@@ -119,7 +127,7 @@ zprávu do terminálu.
 - `.gitignore` vynechává lokální konfiguraci a generované soubory z Gitu.
 
 Cesta modulu `github.com/skybedy/martina-anglicky` je zvolený identifikátor;
-vzdálený repozitář na GitHubu zatím nebyl vytvořen ani připojen.
+remote `origin` odkazuje na stejnojmenný GitHub repozitář.
 
 ## Krok 2: první HTTP server
 
@@ -176,8 +184,8 @@ kořenového adresáře projektu příkazem `go run ./cmd/server`.
   vykreslení nastavíme HTML hlavičku a odešleme stránku. Při chybě vykreslení
   tak můžeme vrátit HTTP 500 místo částečné stránky se stavem 200.
 
-Po úpravě šablony nebo Go kódu je potřeba server restartovat. Stylování
-přidáme v některém z dalších kroků.
+Po úpravě šablony, portrétu nebo Go kódu je potřeba server restartovat.
+Současné responzivní stylování je pro jednoduchost přímo v šabloně.
 
 ## Krok 4: balíčky, routy a pojmenované handlery
 
@@ -185,9 +193,10 @@ Vstupní program je v `cmd/server/main.go` a má `package main`. Webová část
 je samostatný balíček `web` v `internal/web`; všechny jeho Go soubory patří
 do stejného balíčku a sdílejí jeho deklarace.
 
-`main` načte šablonu a předá ji do `web.New(homeTemplate)`. Konstruktor
-vrátí `*web.App`. Struktura drží závislosti, které potřebují její handlery.
-Šablonu tak nemusíme ukládat do globální proměnné.
+`main` načte šablonu i pracovní portrét a předá je do
+`web.New(homeTemplate, martinaPortrait)`. Konstruktor vrátí `*web.App`.
+Struktura drží závislosti, které potřebují její handlery. Šablonu ani obrázek
+tak nemusíme ukládat do globálních proměnných.
 
 Metoda `app.Routes()` vytvoří router a vrátí jej jako `http.Handler`.
 Registrace `mux.HandleFunc("GET /{$}", app.home)` předává routeru

@@ -3,9 +3,13 @@ package web
 import "html/template"
 
 type App struct {
-	homeTemplate *template.Template
+	homeTemplate    *template.Template
+	martinaPortrait []byte
 }
 
-func New(homeTemplate *template.Template) *App {
-	return &App{homeTemplate: homeTemplate}
+func New(homeTemplate *template.Template, martinaPortrait []byte) *App {
+	return &App{
+		homeTemplate:    homeTemplate,
+		martinaPortrait: martinaPortrait,
+	}
 }
